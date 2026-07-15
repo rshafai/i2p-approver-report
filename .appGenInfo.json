@@ -1,0 +1,28 @@
+{
+  "generationParameters": {
+    "generationDate": "Tue Jul 14 2026 09:29:09 GMT-0400 (Eastern Daylight Time)",
+    "generatorPlatform": "Visual Studio Code",
+    "serviceType": "SAP System (ABAP On-Premise)",
+    "metadataFilename": "",
+    "serviceUrl": "https://dr1pas01.agr.gc.ca:44318/sap/opu/odata/sap/ZQAP_C_I2P_WF_APPREPORT",
+    "appName": "i2p-approver-report",
+    "appTitle": "I2P Approvers Report",
+    "appDescription": "I2P Approvers Report",
+    "appNamespace": "ca.gc.agr",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.120.32",
+    "enableEslint": true,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.28.0",
+    "template": "List Report Page V2",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "ZQAP_C_I2P_WF_ApproversReport"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}
