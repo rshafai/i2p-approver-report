@@ -115,7 +115,8 @@ debugger;
                        action: "workflowReport"              
                     },
                     params: {
-                       "TopWiid": topWiid         
+                       //"TopWiid": topWiid 
+                        "guid": guid       
                     }
                 });
             } else {
