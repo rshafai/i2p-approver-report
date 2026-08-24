@@ -106,22 +106,33 @@ debugger;
 
         _navigateExternally(oRowContext) {
             let oObject = oRowContext.getObject();
-            let topWiid = oObject.TopWiid;
-            let oCrossAppNav = sap.ushell && sap.ushell.Container && sap.ushell.Container.getService("CrossApplicationNavigation");
-            if (oCrossAppNav) {
-                oCrossAppNav.toExternal({
-                    target: {
-                       semanticObject: "I2PCheckIn", 
-                       action: "workflowReport"              
-                    },
-                    params: {
-                       //"TopWiid": topWiid 
-                        "guid": guid       
-                    }
-                });
-            } else {
-                console.error("Fiori Launchpad CrossApplicationNavigation service not available.");
-            }
+            let topWiid = String(oObject.TopWiid).padStart(12, "0");
+            let wiid    = String(oObject.TargetWiid).padStart(12, "0");
+            debugger;
+
+          // for local testing only
+          //let sUrl =
+          //"https://dr1pas01.agr.gc.ca:44318/sap/bc/ui2/flp" +
+          //"?sap-client=050&sap-language=EN" +
+          //"#I2PCheckIn-workflowReport&/zqap_c_i2p_checkin_report(" +
+          //"TopWiid='" + topWiid + "',Wiid='" + wiid + "')";
+          //    window.location.href = sUrl;
+
+           let oCrossAppNav = sap.ushell && sap.ushell.Container && sap.ushell.Container.getService("CrossApplicationNavigation");
+           if (oCrossAppNav) {
+             oCrossAppNav.toExternal({
+               target: {
+                 semanticObject: "I2PCheckIn",
+                 action: "workflowReport"
+               },
+               params: {
+                 "TopWiid": topWiid, 
+                 "Wiid": wiid
+               }
+             });
+           } else {
+             console.error("Fiori Launchpad CrossApplicationNavigation service not available.");
+           }
         },
 
 
