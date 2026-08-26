@@ -18,7 +18,6 @@ sap.ui.define([
     return {
       
         onInit: function(oEvent){
-debugger;            
           var oViewModel = new JSONModel({
           });
           this.setModel(oViewModel, "ui");
@@ -62,7 +61,7 @@ debugger;
         },
 
         onAfterRendering: function (oEvent) {
-debugger;
+
             if (!this._oContentTable){
             const name = this.getMetadata().getName();
             const tableNameGrid =  "ca.gc.agr.i2papproverreport::" + name + "::ZQAP_C_I2P_WF_ApproversReport--GridTable";
@@ -108,7 +107,7 @@ debugger;
             let oObject = oRowContext.getObject();
             let topWiid = String(oObject.TopWiid).padStart(12, "0");
             let wiid    = String(oObject.TargetWiid).padStart(12, "0");
-            debugger;
+            
 
           // for local testing only
           //let sUrl =
@@ -175,7 +174,7 @@ debugger;
 /*   Common base methods */        
         _genericError:function(oError){
           try {
-debugger;
+
             var sMessage = "";
             var aErrors = JSON.parse(oError.responseText).error.innererror.errordetails;
             aErrors.forEach(item => {
