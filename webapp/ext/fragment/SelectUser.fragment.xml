@@ -1,0 +1,50 @@
+<core:FragmentDefinition 
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+	xmlns:smartField="sap.ui.comp.smartfield"
+	xmlns:smartForm="sap.ui.comp.smartform"
+>
+	<Dialog id="idSelectUserDialog" 
+        title="{ui>/action} {ui>/numWorkItems} {i18n>work-items}" 
+        resizable="true" draggable="true" 
+        contentWidth="28rem" 
+        class="sapUiResponsiveContentPadding">
+
+        <Text id="idUserConfirmText1" text="You are about to {ui>/action} {ui>/numWorkItems} work item" class="sapUiSmallMarginBottom" />
+
+        <!-- User Selection only for Reserve -->
+        <Text id="idUserConfirmText2" text="{i18n>select-user}" class="sapUiSmallMarginBottom" visible="{= ${ui>/action}==='Reserve' }" />
+        <Label id="idUserLabel" text="Select a User" labelFor="idUserCombo" class="sapUiSmallMarginEnd" visible="{= ${ui>/action}==='Reserve' }"/>
+        <ComboBox
+            id="idUserCombo"
+            class="sapUiSmallMarginBottom "
+            visible="{= ${ui>/action}==='Reserve' }"
+            required="true"
+			showSecondaryValues= "true"
+            selectedKey="{ui>/UserId}"
+			items="{
+					path: '/zqap_c_i2p_workcenter_users',
+					sorter: { path: 'Userid' }
+				}">
+				<core:ListItem id="idUserId" key="{Userid}" text="{Userid}" additionalText = "{UserName}"/>
+			</ComboBox>
+        
+        <ExpandableText 
+            id="idWCHelp" 
+            visible="{= ${ui>/action}==='Reserve' }"
+            maxCharacters="53"
+            class="sapUiSmallMarginBottom sapUiSmallMarginTop grayText" 
+            text="{ui>/helpWC}" 
+            overflowMode="InPlace" />
+
+        <!-- For actions other than Reserve -->
+        <Text id="idUserConfirmText3" text="Please confirm by clicking Submit?" class="sapUiSmallMarginBottom" visible="{= ${ui>/action}!=='Reserve' }" />
+
+        <!-- Buttons -->
+		<buttons>
+			<Button text="{i18n>submit}" id="idUserSubmitButton" press="_callActionWF" type="Emphasized"/>
+			<Button text="{i18n>cancel}" id="idUserCancelButton" press="_onActionCancel" type="Transparent"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

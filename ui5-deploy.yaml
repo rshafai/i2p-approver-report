@@ -19,7 +19,7 @@ builder:
         app:
           name: ZQAP_I2P_APPR
           package: ZQAP_I2P_REPORTS
-          transport: DR1K910526
+          transport: DR1K911545
         exclude:
           - /test/
           - /localService/

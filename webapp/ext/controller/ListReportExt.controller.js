@@ -8,7 +8,7 @@ sap.ui.define([
  	  "sap/ui/model/FilterOperator",
     "sap/ui/core/mvc/ControllerExtension",
     "sap/ui/base/Object",   
-    "sap/suite/ui/generic/template/extensionAPI/extensionAPI",
+    "sap/suite/ui/generic/template/extensionAPI/extensionAPI", 
     "sap/suite/ui/generic/template/lib/CommonEventHandlers"
 
 ], function(MessageBox, MessageToast, Sorter, Fragment, JSONModel, Filter, FilterOperator,
@@ -24,7 +24,7 @@ sap.ui.define([
         },
 
         autoResize: function(oEvent) {
-          this._onBusyStateChanged();
+          //this._onBusyStateChanged();
         },
 
         onBeforeRebindTableExtension: function(oEvent) {
@@ -43,64 +43,45 @@ sap.ui.define([
             }.bind(this),
          };
         },
-        onListNavigationExtension: function(oEvent){
-        },
-        onDataFieldWithIntentBasedNavigation: function (oEvent) {
-        },
         
-        adaptNavigationParameterExtension: function(oSelectionVariant, oObjectInfo){
-            return;
-// This does not allow changing semanticObject or action. It only lets you change, add or remove parameters.
-// this._oContentTable.getPlugins()[0].getTable().getRows()[0].getBindingContext().getObject()
-
-// oSelectionVariant.getSelectOptionsPropertyNames().forEach(function(sSelectOptionName){
-//     if (sSelectOptionName !== 'guid') {
-//        oSelectionVariant.removeSelectOption(sSelectOptionName);
-//     }
-//   });
-        },
 
         onAfterRendering: function (oEvent) {
-
-            if (!this._oContentTable){
+          if (!this._oContentTable){
             const name = this.getMetadata().getName();
             const tableNameGrid =  "ca.gc.agr.i2papproverreport::" + name + "::ZQAP_C_I2P_WF_ApproversReport--GridTable";
             const tableNameResp =  "ca.gc.agr.i2papproverreport::" + name + "::ZQAP_C_I2P_WF_ApproversReport--responsiveTable";
-//            ca.gc.agr.i2papproverreport::sap.suite.ui.generic.template.ListReport.view.ListReport::ZQAP_C_I2P_WF_ApproversReport--listReport
-
 
             this._oContentTable = this.getView().byId(tableNameResp) || this.getView().byId(tableNameGrid) ;
             if (this.getView().byId(tableNameGrid)){
               //GridTable
-              this._oContentTable.attachBusyStateChanged(this._onBusyStateChanged);
-              //this._oContentTable.getPlugins()[0].attachSelectionChange(this._onRowSelected.bind(this));
-
+              //this._oContentTable.attachBusyStateChanged(this._onBusyStateChanged);
+              this._oContentTable.getPlugins()[0].attachSelectionChange(this._onRowSelected.bind(this));
               //Row clickable
-              this._oContentTable.attachCellClick(this._onRowCellClick, this); 
-
+              //this._oContentTable.attachCellClick(this._onRowCellClick, this); 
             } else {
               //ResponsiveTable
-              //this._oContentTable.attachSelectionChange(this._onRowSelected.bind(this));
+              this._oContentTable.attachSelectionChange(this._onRowSelected.bind(this));
             }
-          }          
+          }
+
         },  //override
 
+        _onRowSelected: function( oEvent ){
+          this._refreshButtons();
+        },
+
         _onRowCellClick: function (oEvent) {
+return;          
           // Prevent execution if they clicked the checkbox column or row header
           var sColumnId = oEvent.getParameter("columnId");
           if (!sColumnId) {
               return;
           }
-
           var oRowContext = oEvent.getParameter("rowBindingContext");
           if (!oRowContext) {
               return;
           }
-
           this._navigateExternally(oRowContext);
-        // Trigger standard Fiori Elements navigation via the Navigation Controller API
-        //   var oNavigationController = this.extensionAPI.getNavigationController();
-        //   oNavigationController.navigateInternal(oRowContext);
         },
 
         _navigateExternally(oRowContext) {
@@ -108,15 +89,6 @@ sap.ui.define([
             let topWiid = String(oObject.TopWiid).padStart(12, "0");
             let wiid    = String(oObject.TargetWiid).padStart(12, "0");
             
-
-          // for local testing only
-          //let sUrl =
-          //"https://dr1pas01.agr.gc.ca:44318/sap/bc/ui2/flp" +
-          //"?sap-client=050&sap-language=EN" +
-          //"#I2PCheckIn-workflowReport&/zqap_c_i2p_checkin_report(" +
-          //"TopWiid='" + topWiid + "',Wiid='" + wiid + "')";
-          //    window.location.href = sUrl;
-
            let oCrossAppNav = sap.ushell && sap.ushell.Container && sap.ushell.Container.getService("CrossApplicationNavigation");
            if (oCrossAppNav) {
              oCrossAppNav.toExternal({
@@ -136,38 +108,141 @@ sap.ui.define([
 
 
         _rebindMainTable: function(){
-          //this._oContentTable.rebindTable(true);
           this.extensionAPI.rebindTable();
         },
 
         _onBusyStateChanged: function (oEvent) {
-          // Optimize column widths
-          var oTable = this._oContentTable;
-          var bBusy = false;
-          if (oEvent){
-            var bBusy = oEvent.getParameter("busy");
-            oTable = oEvent.getSource();
-          } 
-          if (!bBusy && !this._bColumnOptimizationDone) {
-            var oTpc = null;
-            if (sap.ui.table.TablePointerExtension) {
-              oTpc = new sap.ui.table.TablePointerExtension(oTable);
-            } else {
-              oTpc = new sap.ui.table.extensions.Pointer(oTable);
-            }
-            var aColumns = oTable.getColumns();
-           for (var i = aColumns.length; i >= 0; i--) {
-             oTpc.doAutoResizeColumn(i);
-             //oTable.autoResizeColumn(i);
-           }
-              //This line can be commented if you want the columns to be adjusted on every scroll
-              //this._bColumnOptimizationDone = true;
-          }
         },
 
 
         navigateXcI2p: function(oEvent) {
         },
+
+
+/*                */
+/* Action Buttons */
+/*                */
+onReserve:function(oEvent){
+  this.wfAction("Reserve");
+},
+onReplace:function(oEvent){
+  this.wfAction("Replace");
+},
+onEscalate:function(oEvent){
+  this.wfAction("Escalate");
+},
+
+_refreshButtons:function(){
+  var aSelectedIndices = this._oContentTable.getPlugins()[0].getSelectedIndices();
+  var bCanReserve = (aSelectedIndices.length === 0) ? false : true,
+      bCanEscalate = (aSelectedIndices.length === 0) ? false : true,
+      bCanReplace = (aSelectedIndices.length === 0) ? false : true;
+
+  aSelectedIndices.forEach(index => {
+    let item = this._oContentTable.getContextByIndex(index).getObject();            
+    bCanReserve = bCanReserve && !!item.can_reserve;
+    bCanReplace = bCanReplace && !!item.can_replace;
+    bCanEscalate = bCanEscalate && !!item.can_escalate;
+  });
+  this.byId("idReserveButton").setEnabled(bCanReserve);
+  this.byId("idEscalateButton").setEnabled(bCanEscalate);
+  this.byId("idReplaceButton").setEnabled(bCanReplace);
+},
+
+_onActionCancel:function(oEvent){
+  if (this._confirmDialog){
+    this._confirmDialog.then(function(oDialog) {
+      oDialog.close();
+    });
+  }
+},
+
+wfAction:function(action){
+  var aSelectedIndices = this._oContentTable.getPlugins()[0].getSelectedIndices();
+  if (aSelectedIndices.length === 0){
+    return;
+  }
+  var oView = this.getView();
+  var oViewModel = this.getModel("ui");
+  oViewModel.setProperty("/action", action);
+  var aWorkCentres = [];
+  var aFilters = [];
+  this._sWiid = "";
+
+  // User selection only required for Reserve
+  if (!this._confirmDialog) {
+    this._confirmDialog = Fragment.load({ id: oView.getId(), name: "ca.gc.agr.i2pcheckinreport.ext.fragment.SelectUser", controller: this
+    }).then(function (oDialog) {
+      oView.addDependent(oDialog);
+      return oDialog;
+    });
+  }
+  this._confirmDialog.then(function(oDialog) {
+    var oUsersCombo = this.getView().byId("idUserCombo");
+    if (oUsersCombo){
+      var oUsers = this.getView().byId("idUserCombo").getBinding("items");
+    }
+    aSelectedIndices.forEach(index => {
+      let item = this._oContentTable.getContextByIndex(index).getObject();
+      if( item.WorkCentre !== "00000000" && !aWorkCentres.find( aWorkCentres => aWorkCentres['WorkCentre'] === item.WorkCentre )){
+        aWorkCentres.push(item.WorkCentre);
+        aFilters.push(new Filter("WorkCentre", FilterOperator.EQ, item.WorkCentre));
+      }
+      this._sWiid += "|" + (action==="Copy")? item.TopWiid : item.Wiid;  //Dec 2025 - for Copy we need TopWiid
+    });
+    if (oUsers){
+      oUsers.filter( new Filter( aFilters, true) );  // AND = true
+    }
+    oViewModel.setProperty("/numWorkItems", aSelectedIndices.length);
+    oViewModel.setProperty("/numWorkCentres", aWorkCentres.length);
+    oDialog.setModel(oView.getModel());
+    oDialog.open();
+  }.bind(this));
+},
+
+
+_callActionWF: function () {
+  var oModel = this.getView().getModel();
+  var sUserId = this.getModel("ui").getProperty("/UserId");
+
+  if (!sUserId){
+    MessageBox.warning(this.getResourceBundle().getText("invalidUserSelection"));
+    return;
+  }
+  var sAction = this.getModel("ui").getProperty("/action");
+  var aSelectedIndices = this._oContentTable.getPlugins()[0].getSelectedIndices();
+  if (aSelectedIndices.length > 0 && this._sWiid){ // && sUserId){
+      var mParameters = {
+        wiid: this._sWiid,
+        user_id: sUserId,
+        action: sAction
+      };
+      var oPromise = new Promise(function (resolve, reject) {
+        oModel.callFunction("/ActionWF", {
+          method: "POST",
+          urlParameters: mParameters,
+          success: function (oData) {
+            resolve(oData);
+          },
+          error: function (oError) {
+            reject(oError);
+          }
+        });
+      });
+      this.getView().setBusy(true);
+      oPromise.then(function (oData) {
+          this.getView().setBusy(false);
+          this._sWiid = "";
+          this.getView().getDependents()[0].close();
+          MessageToast.show(aSelectedIndices.length + " Workflow" + ((aSelectedIndices.length>1)?"s":"") + " successfully actioned");
+          this._rebindMainTable();
+          
+      }.bind(this)).catch(function (oError) {
+          this._genericError(oError);
+          this.getView().setBusy(false);
+      }.bind(this));
+    }
+},
 
 
 

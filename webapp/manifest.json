@@ -117,7 +117,27 @@
             "controllerName": "ca.gc.agr.i2papproverreport.ext.controller.ListReportExt",
             "sap.ui.generic.app": {
               "ZQAP_C_I2P_WF_ApproversReport": {
-                "EntitySet": "ZQAP_C_I2P_WF_ApproversReport"
+                "EntitySet": "ZQAP_C_I2P_WF_ApproversReport",
+                "Actions": {
+                  "onReserve": {
+                    "id": "idReserveButton",
+                    "text": "{@i18n>reserve}",
+                    "press": "onReserve",
+                    "requiresSelection": true
+                  },
+                  "onReplace": {
+                    "id": "idReplaceButton",
+                    "text": "{@i18n>replace}",
+                    "press": "onReplace",
+                    "requiresSelection": true
+                  },
+                  "onEscalate": {
+                    "id": "idEscalateButton",
+                    "text": "{@i18n>escalate}",
+                    "press": "onEscalate",
+                    "requiresSelection": true
+                  }
+                }
               }
             }
           }
@@ -149,16 +169,12 @@
               }
             },
             "tableSettings": {
-              "type": "GridTable"
-            }
-          }
-        },
-        "pages": {
-          "ObjectPage|ZQAP_C_I2P_WF_ApproversReport": {
-            "entitySet": "ZQAP_C_I2P_WF_ApproversReport",
-            "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
-            "component": {
-              "name": "sap.suite.ui.generic.template.ObjectPage"
+              "type": "GridTable",
+              "multiSelect": true,
+              "selectionBehavior": "Row"
+            },
+            "navigation": {
+              "noNavigation": true
             }
           }
         }
